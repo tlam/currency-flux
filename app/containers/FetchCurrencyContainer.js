@@ -4,8 +4,8 @@ var fixerHelpers = require('../utils/fixerHelpers');
 
 var FetchCurrencyContainer = React.createClass({
   handleFetch: function() {
-    console.log('Fetching!')
-    fixerHelpers.getCurrencyInfo()
+    var date = (new Date()).toJSON().substring(0, 10);
+    fixerHelpers.getCurrencyInfo(date)
       .then(function(info) {
         console.log(info);
       }.bind(this))

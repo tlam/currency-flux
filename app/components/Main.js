@@ -1,6 +1,6 @@
 var React = require('react');
 var FetchCurrencyContainer = require('../containers/FetchCurrencyContainer');
-var Results = require('./Results');
+var ResultsContainer = require('../containers/ResultsContainer');
 
 var Main = React.createClass({
   render: function() {
@@ -8,7 +8,7 @@ var Main = React.createClass({
       <div className='main-container'>
         <h1>Hello, world!</h1>
         <FetchCurrencyContainer />
-        <Results />
+        <ResultsContainer />
       </div>
     )
   }
