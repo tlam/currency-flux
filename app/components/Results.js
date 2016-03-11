@@ -5,9 +5,9 @@ var Results = React.createClass({
   render: function() {
     var resultNodes = this.props.data.map(function(currency) {
       return (
-        <div className='col-md-2' key={currency.year}>
-          <h3>{currency.year}</h3>
-          <div>{currency.amount}</div>
+        <div className='col-md-2' key={currency.date}>
+          <h4>{currency.date}</h4>
+          <div>{currency.name} {currency.amount}</div>
         </div>
       )
     });
