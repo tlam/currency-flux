@@ -1,3 +1,4 @@
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
   template: __dirname + '/app/index.html',
@@ -11,13 +12,17 @@ module.exports = {
   ],
   output: {
     path: __dirname + '/dist',
-    filename: "index_bundle.js"
+    filename: 'index_bundle.js'
   },
   module: {
     loaders: [
-      {test: /\.js$/, include: __dirname + '/app', loader: "babel-loader"},
-      {test: /\.css$/, loader: "style-loader!css-loader"}
+      {test: /\.js$/, include: __dirname + '/app', loader: 'babel-loader'},
+      /*{test: /\.css$/, loader: 'style-loader!css-loader'}*/
+      {test: /\.css/, loader: ExtractTextPlugin.extract('css-loader')}
     ]
   },
-  plugins: [HTMLWebpackPluginConfig]
+  plugins: [
+    new ExtractTextPlugin('app.css', {allChunks: true}),
+    HTMLWebpackPluginConfig
+  ]
 };
