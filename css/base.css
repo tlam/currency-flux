@@ -1,0 +1,7 @@
+div.form-group {
+  margin-right: 0.5em;
+}
+
+div#curve-chart {
+  width: 900px; height: 500px
+}

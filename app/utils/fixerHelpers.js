@@ -12,11 +12,11 @@ var helpers = {
     .then(function(info) {
       return info.map(function(currency) {
         return currency.data;
-      })
+      });
     })
     .catch(function(err) {
       console.warn('Error in getCurrenciesInfo: ', err);
-    })
+    });
   }
 };
 

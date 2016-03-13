@@ -1,9 +1,14 @@
 var React = require('react');
 var fixerHelpers = require('../utils/fixerHelpers');
+var CurrencyForm = require('./CurrencyForm');
 var Results = require('./Results');
 
 function dateFormat(year, month, day) {
   return (new Date(year, month, day)).toJSON().substring(0, 10);
+}
+
+function calculateAmount(data, currency, amount) {
+  return (data.rates[currency] * amount).toFixed(2);
 }
 
 var FetchCurrency = React.createClass({
@@ -12,7 +17,7 @@ var FetchCurrency = React.createClass({
       amount: 0,
       currency: 'EUR',
       data: [],
-    }
+    };
   },
   handleCurrencyChange: function(e) {
     this.setState({currency: e.target.value});
@@ -26,56 +31,65 @@ var FetchCurrency = React.createClass({
     var month = today.getMonth();
     var day = today.getDate();
 
-    var years = [year - 2, year - 1, year];
+    var years = [year - 3, year - 2, year - 1, year];
     var dates = years.map(function(year) {
       return dateFormat(year, month, day);
     });
     fixerHelpers.getCurrenciesInfo(dates)
       .then(function(info) {
         var data = info.map(function(currency, index) {
+          var amount = calculateAmount(currency, this.state.currency, this.state.amount);
+          var diff = 0;
+          var foreignChange = 0;
+          var localChange = 0;
+          if (index > 0) {
+            foreignChange = (amount - calculateAmount(info[index - 1], this.state.currency, this.state.amount)).toFixed(2);
+            localChange = (foreignChange / currency.rates[this.state.currency]).toFixed(2);
+          }
           return {
             name: this.state.currency,
             date: currency.date,
-            amount: (currency.rates[this.state.currency] * this.state.amount).toFixed(2)
-          }
+            amount: amount,
+            foreignChange: foreignChange,
+            localChange: localChange
+          };
         }.bind(this));
+        this.drawChart(data, this.state.currency);
         this.setState({data: data});
       }.bind(this));
+  },
+  drawChart: function(chartData, currency) {
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var dataTable = chartData.map(function(chart) {
+        return [chart.date, parseFloat(chart.amount)];
+      });
+      dataTable.splice(0, 0, ['Date', currency + ' Amount']);
+      var data = google.visualization.arrayToDataTable(dataTable);
+
+      var options = {
+        title: 'Currency Flux',
+        curveType: 'function',
+        legend: { position: 'bottom' }
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+      chart.draw(data, options);
+    }
   },
   render: function() {
     return (
       <div className='container'>
-        <form className='form-inline'>
-          <div className='form-group'>
-            <label htmlFor='currencies'>Currency:</label>
-            <select id='currencies' className='form-control' onChange={this.handleCurrencyChange} value={this.state.currency}>
-              <option val='EUR'>EUR</option>
-              <option val='JPY'>JPY</option>
-              <option val='USD'>USD</option>
-            </select>
-          </div>
-          <div className='form-group'>
-            <div className='input-group'>
-              <div className='input-group-addon'>CAD</div>
-              <input
-                type='text'
-                id='amount'
-                className='form-control'
-                name='amount'
-                value={this.state.amount}
-                onChange={this.handleAmountChange} />
-              </div>
-          </div>
-          <button
-            type='button'
-            className='btn btn-primary'
-            onClick={this.handleFetch}>
-              Fetch
-          </button>
-        </form>
+        <CurrencyForm
+          currency={this.state.currency}
+          amount={this.state.amount}
+          handleCurrencyChange={this.handleCurrencyChange}
+          handleAmountChange={this.handleAmountChange}
+          handleFetch={this.handleFetch}
+        />
         <Results data={this.state.data} />
       </div>
-    )
+    );
   }
 });
 

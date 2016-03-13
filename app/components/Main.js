@@ -6,8 +6,9 @@ var Main = React.createClass({
     return (
       <div className='main-container'>
         <FetchCurrency />
+        <div id='curve_chart'></div>
       </div>
-    )
+    );
   }
 });
 

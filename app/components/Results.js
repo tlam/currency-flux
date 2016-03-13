@@ -8,19 +8,21 @@ var Results = React.createClass({
         <div className='col-md-2' key={currency.date}>
           <h4>{currency.date}</h4>
           <div>{currency.name} {currency.amount}</div>
+          <div>{currency.name} change: {currency.foreignChange}</div>
+          <div>CAD change: {currency.localChange}</div>
         </div>
-      )
+      );
     });
     return (
       <div className='row'>
         {resultNodes}
       </div>
-    )
+    );
   }
 });
 
 Results.propTypes = {
   data: PropTypes.array.isRequired
-}
+};
 
 module.exports = Results;
