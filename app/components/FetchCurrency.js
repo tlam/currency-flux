@@ -13,9 +13,11 @@ function calculateAmount(data, currency, amount) {
 
 var FetchCurrency = React.createClass({
   getInitialState: function() {
+    var currencies = ['EUR', 'JPY', 'USD'];
     return {
       amount: 0,
-      currency: 'EUR',
+      currencies: currencies,
+      currency: currencies[0],
       data: [],
     };
   },
@@ -81,6 +83,7 @@ var FetchCurrency = React.createClass({
     return (
       <div className='container'>
         <CurrencyForm
+          currencies={this.state.currencies}
           currency={this.state.currency}
           amount={this.state.amount}
           handleCurrencyChange={this.handleCurrencyChange}

@@ -8,9 +8,11 @@ var CurrencyForm = React.createClass({
         <div className='form-group'>
           <label htmlFor='currencies'>Currency:</label>
           <select id='currencies' className='form-control' onChange={this.props.handleCurrencyChange} value={this.props.currency}>
-            <option val='EUR'>EUR</option>
-            <option val='JPY'>JPY</option>
-            <option val='USD'>USD</option>
+            {
+              this.props.currencies.map(function(currency) {
+                return <option key={currency} val={currency}>{currency}</option>
+              })
+            }
           </select>
         </div>
         <div className='form-group'>
